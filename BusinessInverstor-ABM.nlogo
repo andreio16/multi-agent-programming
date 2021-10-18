@@ -40,7 +40,10 @@ to setup-patches
 end
 
 to setup-turtles
-  create-turtles nr-of-investors [setxy random-pxcor random-pycor]
+  create-turtles nr-of-investors [
+    setxy random-pxcor random-pycor
+    set pcolor white
+  ]
   ask turtles [
     set size 0.8
     set color blue
