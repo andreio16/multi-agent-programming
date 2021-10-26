@@ -6,12 +6,17 @@ patches-own [
   anual-risk        ;; the probability for one inversor to lose wealth  (static)
   anual-profit      ;; net profit for one organization, 1 tick = 1 year (static)
 ]
+
+globals [
+  number-of-years
+]
 ;;-------------------------------------------------------------------------------------------------------------
 
 
 ;; SETUP PROC
 to setup
   clear-all
+  setup-globals
   setup-patches
   setup-turtles
   reset-ticks
@@ -28,14 +33,30 @@ end
 ;;-------------------------------------------------------------------------------------------------------------
 ;; Helper procs
 ;;-------------------------------------------------------------------------------------------------------------
+to setup-globals
+  set number-of-years 5
+end
+
 to setup-patches
-  ;; desc: many business with low profit & few with high
-  ;; draw the 19x19 grid of patches with light colors [9 19 29..139]
   let $color 9
   ask patches [
+    ;; draw the 19x19 grid of patches with light colors [9 19 29..139]
     if $color mod 149 = 0 [set $color 9]
     set pcolor $color
     set $color $color + 10
+
+    ;; desc: many business with low profit
+    set anual-risk one-of (range 1 50) / 100
+    set anual-profit one-of (range 250 500)
+
+    ;;desc: few business with high profit
+    if random 100 < 3
+    [
+      set pcolor green
+      set anual-risk one-of (range 1 5) / 100
+      set anual-profit one-of (range 1500 3000)
+    ]
+
   ]
 end
 
@@ -53,7 +74,6 @@ to setup-turtles
     [
       set x-coord-list fput randx x-coord-list
       set y-coord-list fput randy y-coord-list
-
       create-turtles 1 [setxy randx randy set pcolor white]
       set counter counter - 1
     ]
@@ -63,10 +83,12 @@ to setup-turtles
   ask turtles [
     pen-down
     set size 0.8
+    set wealth 100
     set color blue
     set shape "person"
   ]
 end
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 8
