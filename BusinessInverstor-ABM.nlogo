@@ -40,11 +40,28 @@ to setup-patches
 end
 
 to setup-turtles
-  create-turtles nr-of-investors [
-    setxy random-pxcor random-pycor
-    set pcolor white
+  let x-coord-list []
+  let y-coord-list []
+  let counter nr-of-investors
+
+  ;; get distinct turtle(x,y)
+  while [counter > 0]
+  [
+    let randx random-pxcor
+    let randy random-pycor
+    if not(member? randx x-coord-list and member? randy y-coord-list)
+    [
+      set x-coord-list fput randx x-coord-list
+      set y-coord-list fput randy y-coord-list
+
+      create-turtles 1 [setxy randx randy set pcolor white]
+      set counter counter - 1
+    ]
   ]
+
+  ;; add turtles design
   ask turtles [
+    pen-down
     set size 0.8
     set color blue
     set shape "person"
@@ -121,7 +138,7 @@ nr-of-investors
 nr-of-investors
 0
 15
-5.0
+15.0
 1
 1
 NIL
