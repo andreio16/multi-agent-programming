@@ -114,9 +114,12 @@ to-report utility-for [a-turtle]
   ; First get the turtle's current wealth
   let turtles-wealth [wealth] of a-turtle
 
-  ; Second get profit and risk from turtle's patch
-  let profit ([anual-profit] of patch-here)
-  let fail-prob ([anual-risk] of patch-here)
+  ; Second get profit and risk from patch under this turtle
+  let selfx 0
+  let selfy 0
+  ask a-turtle [set selfx xcor set selfy ycor]
+  let profit ([anual-profit] of patch selfx selfy)
+  let fail-prob ([anual-risk] of patch selfx selfy)
 
   ; Then calculate turtle's utility given its wealth and relevant patch variables
   let utility (turtles-wealth + decision-time-horizon * profit) * ((1 - fail-prob) ^ decision-time-horizon)
@@ -124,6 +127,31 @@ to-report utility-for [a-turtle]
   ; Return value
   report utility
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 8
