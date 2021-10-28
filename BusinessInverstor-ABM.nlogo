@@ -3,12 +3,12 @@ turtles-own [wealth]
 
 ;; Organization class members
 patches-own [
-  anual-risk        ;; the probability for one inversor to lose wealth  (static)
-  anual-profit      ;; net profit for one organization, 1 tick = 1 year (static)
+  anual-risk        ; The probability for one inversor to lose wealth  (static)
+  anual-profit      ; Net profit for one organization, 1 tick = 1 year (static)
 ]
 
 globals [
-  number-of-years
+  decision-time-horizon
 ]
 ;;-------------------------------------------------------------------------------------------------------------
 
@@ -26,37 +26,38 @@ end
 ;; GO PROC
 to go
   if ticks >= 50 [stop]
-  ;; other proc calls
+  repositioning
   tick
 end
+
 
 ;;-------------------------------------------------------------------------------------------------------------
 ;; Helper procs
 ;;-------------------------------------------------------------------------------------------------------------
 to setup-globals
-  set number-of-years 5
+  set decision-time-horizon 5
 end
 
 to setup-patches
   let $color 9
   ask patches [
-    ;; draw the 19x19 grid of patches with light colors [9 19 29..139]
+    ; Draw the 19x19 grid of patches with light colors [9 19 29..139]
     if $color mod 149 = 0 [set $color 9]
     set pcolor $color
     set $color $color + 10
 
-    ;; desc: many business with low profit
-    set anual-risk one-of (range 1 50) / 100
+    ; Desc: many businesses with low profit
     set anual-profit one-of (range 250 500)
 
-    ;;desc: few business with high profit
+    ; Desc: few businesses with high profit
     if random 100 < 3
     [
       set pcolor green
-      set anual-risk one-of (range 1 5) / 100
       set anual-profit one-of (range 1500 3000)
     ]
 
+    ;; Risk doesn't depend on profit
+    set anual-risk one-of (range 1 10) / 100
   ]
 end
 
@@ -65,7 +66,7 @@ to setup-turtles
   let y-coord-list []
   let counter nr-of-investors
 
-  ;; get distinct turtle(x,y)
+  ; Get distinct turtle(x,y)
   while [counter > 0]
   [
     let randx random-pxcor
@@ -79,16 +80,50 @@ to setup-turtles
     ]
   ]
 
-  ;; add turtles design
+  ; Add turtles design
   ask turtles [
     pen-down
     set size 0.8
-    set wealth 100
     set color blue
     set shape "person"
   ]
 end
 
+to repositioning
+  ask turtles [
+  ; Get agentset of empty neighbour patches
+  let potential-destinations neighbors with [not any? turtles-here]
+
+  ; Combine it with turtle's current patch
+  set potential-destinations (patch-set potential-destinations patch-here)
+
+  ; Identify the best destination
+  let best-match max-one-of potential-destinations [utility-for myself]
+
+  ; Now move there
+  move-to best-match
+  ]
+end
+
+
+;;-------------------------------------------------------------------------------------------------------------
+;; Reporters
+;;-------------------------------------------------------------------------------------------------------------
+to-report utility-for [a-turtle]
+  ; A patch-context reporter that calculate utility for turtle 'a-turtle' in this patch
+  ; First get the turtle's current wealth
+  let turtles-wealth [wealth] of a-turtle
+
+  ; Second get profit and risk from turtle's patch
+  let profit ([anual-profit] of patch-here)
+  let fail-prob ([anual-risk] of patch-here)
+
+  ; Then calculate turtle's utility given its wealth and relevant patch variables
+  let utility (turtles-wealth + decision-time-horizon * profit) * ((1 - fail-prob) ^ decision-time-horizon)
+
+  ; Return value
+  report utility
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 8
