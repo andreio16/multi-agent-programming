@@ -8,6 +8,7 @@ patches-own [
 ]
 
 globals [
+  number-of-links
   decision-time-horizon
 ]
 ;;-------------------------------------------------------------------------------------------------------------
@@ -35,6 +36,7 @@ end
 ;; Helper procs
 ;;-------------------------------------------------------------------------------------------------------------
 to setup-globals
+  set number-of-links 5
   set decision-time-horizon 5
 end
 
@@ -66,7 +68,7 @@ to setup-turtles
   let y-coord-list []
   let counter nr-of-investors
 
-  ; Get distinct turtle(x,y)
+  ; Create distinct turtle(x,y)
   while [counter > 0]
   [
     let randx random-pxcor
@@ -80,28 +82,76 @@ to setup-turtles
     ]
   ]
 
-  ; Add turtles design
+  ; Initialize turtles objects
   ask turtles [
     pen-down
     set size 0.8
+    set wealth 0
     set color blue
     set shape "person"
+    if mode? = "linked investors"
+    [
+      create-links-to n-of number-of-links other turtles
+    ]
   ]
 end
 
 to repositioning
   ask turtles [
-  ; Get agentset of empty neighbour patches
-  let potential-destinations neighbors with [not any? turtles-here]
+    ; Dummy init for the swich modes
+    let potential-destinations 0
 
-  ; Combine it with turtle's current patch
-  set potential-destinations (patch-set potential-destinations patch-here)
+    (ifelse
+      mode? = "neighbours"
+      [
+        ; Get agentset of empty 8 neighbor patches
+        set potential-destinations neighbors with [not any? turtles-here]
 
-  ; Identify the best destination
-  let best-match max-one-of potential-destinations [utility-for myself]
+        ; Combine it with turtle's current patch
+        set potential-destinations (patch-set potential-destinations patch-here)
+      ]
+      mode? = "sensing radius"
+      [
+        ; Identify potential destination patches within the sensing radius
+        set potential-destinations patches in-radius sensing-radius with [not any? turtles-here]
 
-  ; Now move there
-  move-to best-match
+        ; Combine it with turtle's current patch
+        set potential-destinations (patch-set potential-destinations patch-here)
+      ]
+      mode? = "linked investors"
+      [
+        ; Get agentset of empty 8 neighbour patches
+        set potential-destinations neighbors with [not any? turtles-here]
+
+        ; Combine it with turtle's current patch
+        set potential-destinations (patch-set potential-destinations patch-here)
+
+        ; Combine with the patches from linked/friend turtle
+        set potential-destinations
+        (
+          patch-set (potential-destinations)
+                    ([neighbors with [not any? turtles-here]] of out-link-neighbors)
+        )
+      ]
+    )
+
+    ; Identify the best destination
+    let best-match max-one-of potential-destinations [utility-for myself]
+
+    ; Update the turtle wealth according to its utility decision & the stochastic fail rate
+    let fail-rate [anual-risk] of best-match
+    let business-profit [anual-profit] of best-match
+
+    set wealth wealth + business-profit
+
+    if random-float 1 < fail-rate
+    [
+      set wealth 0
+      set color 125
+    ]
+
+    ; Now move there
+    move-to best-match
   ]
 end
 
@@ -114,44 +164,12 @@ to-report utility-for [a-turtle]
   ; First get the turtle's current wealth
   let turtles-wealth [wealth] of a-turtle
 
-  ; Second get profit and risk from patch under this turtle
-  let selfx 0
-  let selfy 0
-  ask a-turtle [set selfx xcor set selfy ycor]
-  let profit ([anual-profit] of patch selfx selfy)
-  let fail-prob ([anual-risk] of patch selfx selfy)
-
   ; Then calculate turtle's utility given its wealth and relevant patch variables
-  let utility (turtles-wealth + decision-time-horizon * profit) * ((1 - fail-prob) ^ decision-time-horizon)
+  let utility (turtles-wealth + decision-time-horizon * anual-profit) * ((1 - anual-risk) ^ decision-time-horizon)
 
   ; Return value
   report utility
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 8
@@ -215,10 +233,10 @@ NIL
 0
 
 SLIDER
-426
-10
-598
-43
+429
+263
+601
+296
 nr-of-investors
 nr-of-investors
 0
@@ -245,6 +263,50 @@ NIL
 NIL
 NIL
 0
+
+SLIDER
+430
+300
+602
+333
+sensing-radius
+sensing-radius
+0
+10
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+PLOT
+428
+10
+895
+260
+Wealth Distribution over Time
+Year
+Mean investor wealth
+0.0
+50.0
+0.0
+50000.0
+false
+true
+"" ""
+PENS
+"mean-wealth" 1.0 1 -14439633 true "" "plot mean [wealth] of turtles"
+"wealth-std" 1.0 2 -2674135 true "" "plot standard-deviation [wealth] of turtles"
+
+CHOOSER
+431
+337
+602
+382
+mode?
+mode?
+"neighbours" "sensing radius" "linked investors"
+2
 
 @#$#@#$#@
 ## WHAT IS IT?
