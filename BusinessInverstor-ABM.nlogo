@@ -362,14 +362,14 @@ HORIZONTAL
 Why does mean wealth increase as sensing radius increases, but the standard deviation in wealth does not increase as much? What are possible explanations, and how can you test whether they are important?
 
 Answer:
-	The mean wealth increses as the radius increase because the investors have more 		alternatives in choosing a business, otherwise they could easily get stuck in a 		local maximum. On the other hand the wealth standard deviation doesn't increase 		that much because over time as the investors is  changing businesses the rate of 		fails increases. The mean and standard deviation are relevant and they reflect 			the follwing scenario: the first investor that reach a green (profitable) 			business have a greater chance of growing their wealth over time, meanwhile the 		other investors are looking for profitable business with no luck. The rich get 			richer and their location is blocked only for them. This behavior looks like the 		Pareto Principle when a small minority of people controls the  majority of 			wealth. 
+The mean wealth increses as the radius increase because the investors have more alternatives in choosing a business, otherwise they could easily get stuck in a local maximum. On the other hand the wealth standard deviation doesn't increase that much because over time as the investors is  changing businesses the rate of fails increases.The mean and standard deviation are relevant and they reflect the follwing scenario: the first investor that reach a green (profitable) business have a greater chance of growing their wealth over time, meanwhile the other investors are looking for profitable business with no luck. The rich get richer and their location is blocked only for them. This behavior looks like the Pareto Principle when a small minority of people controls the majority of wealth. 
 
 
 ## Exercise 10.4
 Investigate how the number of links each investor has affects the investors’ wealth and the standard deviation in wealth. In a simulation experiment, vary the number of links per investor from 0 to 15. What happens (or does not happen)? Why?
 
 Answer:
-	As the number of links between investors is increasing they will reposition in 			the neighbourhood of the profitable businesses very quick. The overall wealth  			will increase faster and the standard deviation will follow the trend. As this 			scenario uses more links the competition increase, and the environment will reach 	a stable phase in the early years (ticks). Hence those answers are given by 			describing the general behaviour through many experiments, we still need to be 			aware of a random tolerance factor that computes everything.
+As the number of links between investors is increasing they will reposition in the neighbourhood of the profitable businesses very quick. The overall wealth will increase faster and the standard deviation will follow the trend. As this scenario uses more links the competition increase, and the environment will reach a stable phase in the early years (ticks). Hence those answers are given by describing the general behaviour through many experiments, we still need to be aware of a random tolerance factor that computes everything.
 @#$#@#$#@
 default
 true
