@@ -8,7 +8,6 @@ patches-own [
 ]
 
 globals [
-  number-of-links
   decision-time-horizon
 ]
 ;;-------------------------------------------------------------------------------------------------------------
@@ -36,7 +35,6 @@ end
 ;; Helper procs
 ;;-------------------------------------------------------------------------------------------------------------
 to setup-globals
-  set number-of-links 5
   set decision-time-horizon 5
 end
 
@@ -50,16 +48,16 @@ to setup-patches
 
     ; Desc: many businesses with low profit
     set anual-profit one-of (range 250 500)
+    set anual-risk one-of (range 1 10) / 100
 
     ; Desc: few businesses with high profit
     if random 100 < 3
     [
       set pcolor green
       set anual-profit one-of (range 1500 3000)
+     set anual-risk one-of (range 1 3) / 100
     ]
 
-    ;; Risk doesn't depend on profit
-    set anual-risk one-of (range 1 10) / 100
   ]
 end
 
@@ -273,7 +271,7 @@ sensing-radius
 sensing-radius
 0
 10
-1.0
+5.0
 1
 1
 NIL
@@ -300,13 +298,28 @@ PENS
 
 CHOOSER
 431
-337
+379
 602
-382
+424
 mode?
 mode?
 "neighbours" "sensing radius" "linked investors"
 2
+
+SLIDER
+430
+339
+602
+372
+number-of-links
+number-of-links
+0
+14
+10.0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -344,6 +357,19 @@ mode?
 ## CREDITS AND REFERENCES
 
 (a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+
+## Exercise 10.3
+Why does mean wealth increase as sensing radius increases, but the standard deviation in wealth does not increase as much? What are possible explanations, and how can you test whether they are important?
+
+Answer:
+	The mean wealth increses as the radius increase because the investors have more 		alternatives in choosing a business, otherwise they could easily get stuck in a 		local maximum. On the other hand the wealth standard deviation doesn't increase 		that much because over time as the investors is  changing businesses the rate of 		fails increases. The mean and standard deviation are relevant and they reflect 			the follwing scenario: the first investor that reach a green (profitable) 			business have a greater chance of growing their wealth over time, meanwhile the 		other investors are looking for profitable business with no luck. The rich get 			richer and their location is blocked only for them. This behavior looks like the 		Pareto Principle when a small minority of people controls the  majority of 			wealth. 
+
+
+## Exercise 10.4
+Investigate how the number of links each investor has affects the investors’ wealth and the standard deviation in wealth. In a simulation experiment, vary the number of links per investor from 0 to 15. What happens (or does not happen)? Why?
+
+Answer:
+	As the number of links between investors is increasing they will reposition in 			the neighbourhood of the profitable businesses very quick. The overall wealth  			will increase faster and the standard deviation will follow the trend. As this 			scenario uses more links the competition increase, and the environment will reach 	a stable phase in the early years (ticks). Hence those answers are given by 			describing the general behaviour through many experiments, we still need to be 			aware of a random tolerance factor that computes everything.
 @#$#@#$#@
 default
 true
