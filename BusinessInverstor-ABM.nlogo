@@ -36,6 +36,7 @@ end
 ;;-------------------------------------------------------------------------------------------------------------
 to setup-globals
   set decision-time-horizon 5
+  set number-of-links nr-of-investors - 1
 end
 
 to setup-patches
@@ -239,7 +240,7 @@ nr-of-investors
 nr-of-investors
 0
 15
-15.0
+5.0
 1
 1
 NIL
@@ -271,7 +272,7 @@ sensing-radius
 sensing-radius
 0
 10
-5.0
+7.0
 1
 1
 NIL
