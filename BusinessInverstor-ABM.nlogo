@@ -325,39 +325,39 @@ HORIZONTAL
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+This is an application that simulates different situations in a multi agent environment based on a model. This model (business investor) simulates how people decide which business to invest in, when the alternative businesses they choose from differ in their annual profit and in their risk of failing such that the investors lose all their wealth. Sensing is especially important in this model because the profit distribution is skewed: there are many businesses with low profit and only a few highly profitable ones.
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+For each business alternatives, they are modeled as NetLogo patches, a use of patches to represent something other than geographic space. In the first version, investors (modeled as turtles) are assumed to sense financial information only from neighbor patches; in the second version, we will add links among turtles and simulate sensing through a network. 
+The basic topic of this model is how agents make decisions involving trade­offs between several objectives—here, increasing profit and decreasing risk. The model’s primary output is mean investor wealth over time. Important secondary outputs are the mean profit and risk chosen by investors over time, and the number of investors who have suffered a failure. The adaptive behavior of investor agents is repositioning: the decision of which neighboring business to move to (or whether to stay put), considering the profit and risk of these alternatives. Each time step, investors can reposition to any unoccupied one of their adjacent patches or retain their current position. Investors rate business alternatives by a utility measure that represents their expected future wealth at the end of a time horizon (T, a number of future years; we use 5) if they buy and operate the business. 
+An investor identifies all the businesses that it could invest in: any of the neighboring eight (or fewer if on the edge of the space) patches that are unoccupied, plus its current patch. The investor then determines which of these alternatives provides the highest value of the utility function, and moves (or stays) there. Another way is to create links between investors for repositioning where the expected utility is higher.
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+How to use the model:
+Firstly, select the number of investors you want to have on the simulation window. After that, you can select the mode you want to run the simulation, there are 3 modes: neighbours, sensing radius and linked investors. Neighbours mode: investors will search only the 8 near squares, the sensing radius: investors will search the near squares based on the sensing-radius trackbar value, linked investors: investors will search based on neighbour values + the linked neighbour squares. Number of links will be always smaller with at least 1 link than the investors total number, the number-of-links trackbar can set the investors links to eachother randomly.
+After choosing this settings, you can Setup a new random simulation and then clicking on either “Go” or “Go once”, the statistical results will be shown in the right panel plot like in the photo.
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
+Test different models and compare the mean wealth vs the standard deviation for all the investors.
 
 ## THINGS TO TRY
 
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+Described all the buttons and options at “How to use the model” chapter.
 
 ## EXTENDING THE MODEL
 
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
-
-## NETLOGO FEATURES
-
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+Change random unit to increase the failure rate or test different utilities (U) functions to find new configuration properties and different plot results.
 
 ## RELATED MODELS
 
-(models in the NetLogo Models Library and elsewhere which are of related interest)
+Telemarketer – chapter 13.3 [1].
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+[1] – Agent-Based and Individual-Based Modeling – A practical introduction – Steven F. Railsback & Volker Grimm
 
 ## Exercise 10.3
 Why does mean wealth increase as sensing radius increases, but the standard deviation in wealth does not increase as much? What are possible explanations, and how can you test whether they are important?
